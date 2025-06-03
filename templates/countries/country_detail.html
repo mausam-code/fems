@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}Country Details{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>{{ object.name }} ({{ object.code }})</h1>
+    <div class="card">
+        <div class="card-header">
+            Country ID: {{ object.id }}
+        </div>
+        <div class="card-body">
+            <p><strong>Name:</strong> {{ object.name }}</p>
+            <p><strong>Code:</strong> {{ object.code }}</p>
+            <p><strong>Region:</strong> {{ object.region }}</p>
+            <p><strong>Status:</strong> {{ object.status }}</p>
+            <p><strong>Created At:</strong> {{ object.created_at }}</p>
+            <p><strong>Updated At:</strong> {{ object.updated_at }}</p>
+        </div>
+        <div class="card-footer">
+            <a href="#" class="btn btn-secondary">Back to List</a> {# Placeholder URL #}
+            <a href="#" class="btn btn-warning">Edit</a> {# Placeholder URL #}
+        </div>
+    </div>
+</div>
+{% endblock %}

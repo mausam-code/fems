@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}Vacancy Details{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>{{ object.title }}</h1>
+    <div class="card">
+        <div class="card-header">
+            Vacancy ID: {{ object.id }} - Posted by: {{ object.company.name }}
+        </div>
+        <div class="card-body">
+            <p><strong>Title:</strong> {{ object.title }}</p>
+            <p><strong>Description:</strong> {{ object.description }}</p>
+            <p><strong>Location:</strong> {{ object.location }}</p>
+            <p><strong>Type:</strong> {{ object.type }}</p>
+            <p><strong>Salary:</strong> {{ object.salary_min }} - {{ object.salary_max }} {{ object.salary_currency }}</p>
+            <p><strong>Status:</strong> {{ object.status }}</p>
+            <p><strong>Published Date:</strong> {{ object.published_date }}</p>
+            <p><strong>Expiry Date:</strong> {{ object.expiry_date }}</p>
+            <p><strong>Created At:</strong> {{ object.created_at }}</p>
+            <p><strong>Updated At:</strong> {{ object.updated_at }}</p>
+        </div>
+        <div class="card-footer">
+            <a href="#" class="btn btn-secondary">Back to List</a> {# Placeholder URL #}
+            <a href="#" class="btn btn-warning">Edit</a> {# Placeholder URL #}
+            {% if user.is_authenticated and user.profile.role == 'worker' %} {# Example role check #}
+                <a href="#" class="btn btn-success">Apply Now</a> {# Placeholder URL for application #}
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

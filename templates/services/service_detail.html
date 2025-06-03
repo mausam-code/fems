@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}Service Details{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>{{ object.name }}</h1> {# Assuming 'name' field #}
+    <div class="card">
+        <div class="card-header">
+            Service ID: {{ object.id }} {# Assuming 'id' field #}
+        </div>
+        <div class="card-body">
+            <p><strong>Name:</strong> {{ object.name }}</p>
+            <p><strong>Description:</strong> {{ object.description }}</p> {# Assuming 'description' field #}
+            <!-- Add other fields specific to the Service model here -->
+            <p><strong>Created At:</strong> {{ object.created_at }}</p> {# Assuming 'created_at' field #}
+            <p><strong>Updated At:</strong> {{ object.updated_at }}</p> {# Assuming 'updated_at' field #}
+        </div>
+        <div class="card-footer">
+            <a href="#" class="btn btn-secondary">Back to List</a> {# Placeholder URL #}
+            <a href="#" class="btn btn-warning">Edit</a> {# Placeholder URL #}
+        </div>
+    </div>
+</div>
+{% endblock %}

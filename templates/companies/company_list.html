@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}Companies List{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Companies</h1>
+    <a href="#" class="btn btn-primary mb-3">Add New Company</a> {# Placeholder URL #}
+    <ul class="list-group">
+        {% for company in object_list %}
+        <li class="list-group-item">
+            <a href="#">{{ company.name }}</a> {# Placeholder URL #}
+            <p><small>Country: {{ company.country_id }} - Status: {{ company.status }}</small></p>
+        </li>
+        {% empty %}
+        <li class="list-group-item">No companies found.</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

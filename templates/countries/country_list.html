@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}Countries List{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Countries</h1>
+    <a href="#" class="btn btn-primary mb-3">Add New Country</a> {# Placeholder URL #}
+    <ul class="list-group">
+        {% for country in object_list %}
+        <li class="list-group-item">
+            <a href="#">{{ country.name }} ({{ country.code }})</a> {# Placeholder URL #}
+            <p><small>Region: {{ country.region }} - Status: {{ country.status }}</small></p>
+        </li>
+        {% empty %}
+        <li class="list-group-item">No countries found.</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

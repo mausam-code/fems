@@ -1,0 +1,151 @@
+{% extends 'base.html' %}
+
+{% block title %}My Documents{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>My Documents</h1>
+        <a href="{% url 'documents:scanner' %}" class="btn btn-success">Upload New Document</a>
+    </div>
+
+    {% if documents %}
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Documents</h5>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Document Type</th>
+                            <th>File Name</th>
+                            <th>Status</th>
+                            <th>Uploaded On</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for document in documents %}
+                        <tr>
+                            <td>{{ document.id }}</td>
+                            <td>{{ document.document_type }}</td>
+                            <td>{{ document.document.name|slice:"9:" }}</td>
+                            <td>
+                                {% if document.is_verified %}
+                                <span class="badge bg-success">Verified</span>
+                                {% elif document.is_rejected %}
+                                <span class="badge bg-danger">Rejected</span>
+                                {% else %}
+                                <span class="badge bg-warning">Pending</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ document.created_at|date:"M d, Y" }}</td>
+                            <td>
+                                <a href="{{ document.document.url }}" class="btn btn-sm btn-primary" target="_blank">View</a>
+                                {% if not document.is_verified %}
+                                <a href="{% url 'applications:application_detail' document.application.id %}" class="btn btn-sm btn-warning">Update</a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Document Status Summary -->
+    <div class="row mt-4">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header bg-success text-white">Verified Documents</div>
+                <div class="card-body text-center">
+                    <h3>{{ verified_count|default:"0" }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header bg-warning text-white">Pending Documents</div>
+                <div class="card-body text-center">
+                    <h3>{{ pending_count|default:"0" }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header bg-danger text-white">Rejected Documents</div>
+                <div class="card-body text-center">
+                    <h3>{{ rejected_count|default:"0" }}</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+        <p>You haven't uploaded any documents yet.</p>
+        <p>Documents are required for job applications and verification of your profile.</p>
+        <a href="{% url 'documents:scanner' %}" class="btn btn-primary mt-2">Upload Your First Document</a>
+    </div>
+    {% endif %}
+
+    <!-- Document Types Information -->
+    <div class="card mt-4">
+        <div class="card-header bg-info text-white">
+            <h5 class="mb-0">Required Documents</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <div class="card h-100">
+                        <div class="card-header">Identification</div>
+                        <div class="card-body">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">National ID Card</li>
+                                <li class="list-group-item">Passport</li>
+                                <li class="list-group-item">Driver's License</li>
+                            </ul>
+                        </div>
+                        <div class="card-footer text-muted">
+                            At least one required
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="card h-100">
+                        <div class="card-header">Education</div>
+                        <div class="card-body">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">Degree Certificate</li>
+                                <li class="list-group-item">Transcript</li>
+                                <li class="list-group-item">Diploma</li>
+                            </ul>
+                        </div>
+                        <div class="card-footer text-muted">
+                            Required for skilled positions
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="card h-100">
+                        <div class="card-header">Professional</div>
+                        <div class="card-body">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">Resume/CV</li>
+                                <li class="list-group-item">Work Certificates</li>
+                                <li class="list-group-item">Professional Licenses</li>
+                            </ul>
+                        </div>
+                        <div class="card-footer text-muted">
+                            Recommended for all applications
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block title %}Document Scanner{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4>Document Scanner</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="id_document">Document Image:</label>
+                            {{ form.document }}
+                            <small class="form-text text-muted">{{ form.document.help_text }}</small>
+                        </div>
+                        <div class="form-group mt-3">
+                            <label for="id_document_type">Document Type:</label>
+                            {{ form.document_type }}
+                        </div>
+                        <button type="submit" class="btn btn-primary mt-3">Scan Document</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

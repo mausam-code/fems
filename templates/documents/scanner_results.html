@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% load custom_filters %}
+
+{% block title %}Scanner Results{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h4>Document Scan Results</h4>
+                </div>
+                <div class="card-body">
+                    {% if document %}
+                        <h5>Document Information</h5>
+                        <p><strong>Name:</strong> {{ document.name }}</p>
+                        <p><strong>Type:</strong> {{ document.document_type }}</p>
+                        <p><strong>Uploaded:</strong> {{ document.created_at }}</p>
+                        
+                        {% if passport_info %}
+                            <h5 class="mt-4">Extracted Passport Information</h5>
+                            <table class="table table-bordered">
+                                <tbody>
+                                    {% for key, value in passport_info.items %}
+                                    <tr>
+                                        <th>{{ key|title|replace:"_," }}</th>
+                                        <td>{{ value|default:"Not detected" }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        {% endif %}
+                        
+                        {% if extracted_text %}
+                            <h5 class="mt-4">Extracted Text</h5>
+                            <div class="border p-3 bg-light">
+                                <pre>{{ extracted_text }}</pre>
+                            </div>
+                        {% endif %}
+                        
+                        <div class="mt-4">
+                            <a href="{% url 'documents:scanner' %}" class="btn btn-primary">Scan Another Document</a>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-warning">
+                            No document scan results found. Please try scanning a document first.
+                        </div>
+                        <a href="{% url 'documents:scanner' %}" class="btn btn-primary">Go to Scanner</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

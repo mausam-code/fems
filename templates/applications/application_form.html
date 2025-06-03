@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}{% if form.instance.id %}Edit{% else %}Create{% endif %} Application{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>{% if form.instance.id %}Edit{% else %}Create{% endif %} Application</h1>
+        <a href="{% url 'applications:application_list' %}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Back to List
+        </a>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card">
+                <div class="card-header">
+                    {% if form.instance.id %}
+                    Edit Application #{{ form.instance.id }}
+                    {% else %}
+                    New Application
+                    {% endif %}
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        {% if form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            {{ form.non_field_errors }}
+                        </div>
+                        {% endif %}
+                        
+                        <div class="row">
+                            {% if form.vacancy %}
+                            <div class="col-md-12 mb-3">
+                                {{ form.vacancy|as_crispy_field }}
+                            </div>
+                            {% endif %}
+                            
+                            {% if form.application_data %}
+                            <div class="col-md-12 mb-3">
+                                {{ form.application_data|as_crispy_field }}
+                            </div>
+                            {% endif %}
+                            
+                            {% if form.remarks %}
+                            <div class="col-md-12 mb-3">
+                                {{ form.remarks|as_crispy_field }}
+                            </div>
+                            {% endif %}
+                            
+                            {% for hidden in form.hidden_fields %}
+                            {{ hidden }}
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="d-flex justify-content-between mt-4">
+                            <a href="{% if form.instance.id %}{% url 'applications:application_detail' form.instance.id %}{% else %}{% url 'applications:application_list' %}{% endif %}" class="btn btn-secondary">
+                                <i class="bi bi-x"></i> Cancel
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check2"></i> {% if form.instance.id %}Update{% else %}Submit{% endif %} Application
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                {% if form.instance.id %}
+                <div class="card-footer text-muted">
+                    <small>Last updated: {{ form.instance.updated_at|date:"F d, Y H:i" }}</small>
+                </div>
+                {% endif %}
+            </div>
+            
+            {% if not form.instance.id %}
+            <div class="card mt-4">
+                <div class="card-header bg-info text-white">
+                    <i class="bi bi-info-circle"></i> Application Information
+                </div>
+                <div class="card-body">
+                    <p>Please complete the application form with accurate information. Once submitted, your application will be reviewed by our team.</p>
+                    <ul>
+                        <li>Select the vacancy you wish to apply for</li>
+                        <li>Provide any additional information requested in the application data field</li>
+                        <li>Add any remarks or special requests in the remarks field</li>
+                    </ul>
+                    <p>After submission, you will be able to upload supporting documents for your application.</p>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

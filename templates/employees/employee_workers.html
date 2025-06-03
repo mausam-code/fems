@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block title %}Manage Workers{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Manage Workers</h1>
+    </div>
+
+    {% if workers %}
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Workers</h5>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Status</th>
+                            <th>Created</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for worker in workers %}
+                        <tr>
+                            <td>{{ worker.id }}</td>
+                            <td>{{ worker.user.get_full_name }}</td>
+                            <td>{{ worker.user.email }}</td>
+                            <td>{{ worker.phone }}</td>
+                            <td>
+                                {% if worker.is_verified %}
+                                <span class="badge bg-success">Verified</span>
+                                {% else %}
+                                <span class="badge bg-warning">Unverified</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ worker.created_at|date:"M d, Y" }}</td>
+                            <td>
+                                <a href="{% url 'workers:worker_detail' worker.id %}" class="btn btn-sm btn-primary">View</a>
+                                {% if not worker.is_verified %}
+                                <a href="{% url 'workers:worker_update' worker.id %}" class="btn btn-sm btn-success">Update</a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+        <p>No workers found.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

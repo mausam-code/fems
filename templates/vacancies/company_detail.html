@@ -1,0 +1,149 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ company.name }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>{{ company.name }}</h1>
+        <div>
+            <a href="{% url 'vacancies:company_list' %}" class="btn btn-secondary">Back to Companies</a>
+            {% if perms.vacancies.change_company %}
+            <a href="{% url 'vacancies:company_update' company.id %}" class="btn btn-warning">Edit Company</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Company Details -->
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Company Details</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <h6 class="text-muted">Country</h6>
+                        <p>{{ company.country.name }}</p>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <h6 class="text-muted">Website</h6>
+                        {% if company.website %}
+                        <p><a href="{{ company.website }}" target="_blank">{{ company.website }}</a></p>
+                        {% else %}
+                        <p class="text-muted">Not provided</p>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <h6 class="text-muted">Email</h6>
+                        {% if company.email %}
+                        <p><a href="mailto:{{ company.email }}">{{ company.email }}</a></p>
+                        {% else %}
+                        <p class="text-muted">Not provided</p>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <h6 class="text-muted">Phone</h6>
+                        {% if company.phone %}
+                        <p>{{ company.phone }}</p>
+                        {% else %}
+                        <p class="text-muted">Not provided</p>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <h6 class="text-muted">Address</h6>
+                        {% if company.address %}
+                        <p>{{ company.address }}</p>
+                        {% else %}
+                        <p class="text-muted">Not provided</p>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <h6 class="text-muted">Created</h6>
+                        <p>{{ company.created_at|date:"F d, Y" }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Company Description -->
+        <div class="col-md-8 mb-4">
+            <div class="card h-100">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">About {{ company.name }}</h5>
+                </div>
+                <div class="card-body">
+                    {% if company.description %}
+                    <p>{{ company.description|linebreaks }}</p>
+                    {% else %}
+                    <p class="text-muted">No description provided.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Company Vacancies -->
+    <div class="card mt-4">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Vacancies at {{ company.name }}</h5>
+            {% if perms.vacancies.add_vacancy %}
+            <a href="{% url 'vacancies:vacancy_create' %}?company={{ company.id }}" class="btn btn-light btn-sm">Add Vacancy</a>
+            {% endif %}
+        </div>
+        <div class="card-body p-0">
+            {% if vacancies %}
+            <div class="table-responsive">
+                <table class="table table-striped table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Country</th>
+                            <th>Salary</th>
+                            <th>Status</th>
+                            <th>Posted</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for vacancy in vacancies %}
+                        <tr>
+                            <td>{{ vacancy.title }}</td>
+                            <td>{{ vacancy.country.name }}</td>
+                            <td>{{ vacancy.salary }}</td>
+                            <td>
+                                {% if vacancy.is_active %}
+                                <span class="badge bg-success">Active</span>
+                                {% else %}
+                                <span class="badge bg-secondary">Inactive</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ vacancy.created_at|date:"M d, Y" }}</td>
+                            <td>
+                                <a href="{% url 'vacancies:vacancy_detail' vacancy.id %}" class="btn btn-sm btn-primary">View</a>
+                                {% if perms.vacancies.change_vacancy %}
+                                <a href="{% url 'vacancies:vacancy_update' vacancy.id %}" class="btn btn-sm btn-warning">Edit</a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="p-4 text-center">
+                <p class="text-muted">No vacancies found for this company.</p>
+                {% if perms.vacancies.add_vacancy %}
+                <a href="{% url 'vacancies:vacancy_create' %}?company={{ company.id }}" class="btn btn-primary">Add First Vacancy</a>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

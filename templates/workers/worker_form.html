@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}{% if form.instance.pk %}Edit Worker Profile{% else %}Create Worker Profile{% endif %}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>{% if form.instance.pk %}Edit Worker Profile{% else %}Create New Worker Profile{% endif %}</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <button type="submit" class="btn btn-success">{% if form.instance.pk %}Save Changes{% else %}Create Profile{% endif %}</button>
+        <a href="#" class="btn btn-secondary">Cancel</a> {# Placeholder URL for worker list or dashboard #}
+    </form>
+</div>
+{% endblock %}

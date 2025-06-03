@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}Application Documents{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1>Documents for Application #{{ application.id }}</h1>
+        {% if user.user_type == 'worker' and application.worker.user == user %}
+        <a href="{% url 'applications:application_document_create' application.id %}" class="btn btn-primary">
+            <i class="bi bi-upload"></i> Upload New Document
+        </a>
+        {% endif %}
+    </div>
+    
+    <div class="card mb-4">
+        <div class="card-header">
+            Application Details
+        </div>
+        <div class="card-body">
+            <p><strong>Worker:</strong> {{ application.worker.user.get_full_name|default:application.worker.user.email }}</p>
+            <p><strong>Status:</strong> {{ application.get_status_display }}</p>
+            <p><strong>Created At:</strong> {{ application.created_at }}</p>
+            <a href="{% url 'applications:application_detail' application.id %}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Back to Application
+            </a>
+        </div>
+    </div>
+    
+    <div class="card">
+        <div class="card-header">
+            Documents
+        </div>
+        <div class="card-body">
+            {% if documents %}
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Document Type</th>
+                            <th>File</th>
+                            <th>Uploaded At</th>
+                            <th>Verification Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for document in documents %}
+                        <tr>
+                            <td>{{ document.document_type }}</td>
+                            <td>
+                                <a href="{{ document.file.url }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-file-earmark"></i> View
+                                </a>
+                            </td>
+                            <td>{{ document.created_at }}</td>
+                            <td>
+                                {% if document.is_verified %}
+                                <span class="badge bg-success">Verified</span>
+                                {% elif document.is_verified == False %}
+                                <span class="badge bg-danger">Rejected</span>
+                                {% else %}
+                                <span class="badge bg-warning text-dark">Pending</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if user.is_staff or user.employee_profile.permissions.can_verify_applications %}
+                                <a href="{% url 'applications:application_document_verify' document.id %}" class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-check-circle"></i> Verify
+                                </a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="text-center">No documents uploaded yet.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

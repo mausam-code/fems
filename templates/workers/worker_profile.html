@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+
+{% block title %}My Profile{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Worker Profile</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-md-4 text-center">
+                            <div class="profile-img-container mb-3">
+                                {% if worker.profile_picture %}
+                                <img src="{{ worker.profile_picture.url }}" alt="Profile Picture" class="img-fluid rounded-circle profile-img">
+                                {% else %}
+                                <div class="profile-placeholder rounded-circle d-flex align-items-center justify-content-center">
+                                    <i class="bi bi-person-fill" style="font-size: 3rem;"></i>
+                                </div>
+                                {% endif %}
+                            </div>
+                            <div>
+                                <a href="{% url 'workers:worker_update' worker.id %}" class="btn btn-primary">Edit Profile</a>
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <h4>{{ worker.user.get_full_name }}</h4>
+                            <p class="text-muted">{{ worker.user.email }}</p>
+                            
+                            <div class="mb-3">
+                                <strong>Phone:</strong> {{ worker.phone|default:"Not provided" }}
+                            </div>
+                            <div class="mb-3">
+                                <strong>Address:</strong> {{ worker.address|default:"Not provided" }}
+                            </div>
+                            <div class="mb-3">
+                                <strong>Date of Birth:</strong> {{ worker.date_of_birth|date:"F d, Y"|default:"Not provided" }}
+                            </div>
+                            <div class="mb-3">
+                                <strong>Status:</strong>
+                                {% if worker.is_verified %}
+                                <span class="badge bg-success">Verified</span>
+                                {% else %}
+                                <span class="badge bg-warning">Unverified</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h5 class="border-bottom pb-2">Education</h5>
+                            {% if worker.education.all %}
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Degree</th>
+                                            <th>Institution</th>
+                                            <th>Year</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for edu in worker.education.all %}
+                                        <tr>
+                                            <td>{{ edu.degree }}</td>
+                                            <td>{{ edu.institution }}</td>
+                                            <td>{{ edu.year }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            {% else %}
+                            <p class="text-muted">No education details added yet.</p>
+                            {% endif %}
+                            <div class="text-end mb-4">
+                                <a href="{% url 'workers:worker_education_add' %}" class="btn btn-sm btn-outline-primary">Add Education</a>
+                            </div>
+                            
+                            <h5 class="border-bottom pb-2">Work Experience</h5>
+                            {% if worker.experience.all %}
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Position</th>
+                                            <th>Company</th>
+                                            <th>Duration</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for exp in worker.experience.all %}
+                                        <tr>
+                                            <td>{{ exp.position }}</td>
+                                            <td>{{ exp.company }}</td>
+                                            <td>{{ exp.start_date|date:"M Y" }} - {% if exp.end_date %}{{ exp.end_date|date:"M Y" }}{% else %}Present{% endif %}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            {% else %}
+                            <p class="text-muted">No work experience added yet.</p>
+                            {% endif %}
+                            <div class="text-end mb-4">
+                                <a href="{% url 'workers:worker_experience_add' %}" class="btn btn-sm btn-outline-primary">Add Experience</a>
+                            </div>
+                            
+                            <h5 class="border-bottom pb-2">Skills</h5>
+                            {% if worker.skills.all %}
+                            <div class="skill-tags mb-3">
+                                {% for skill in worker.skills.all %}
+                                <span class="badge bg-secondary p-2 m-1">{{ skill.name }}</span>
+                                {% endfor %}
+                            </div>
+                            {% else %}
+                            <p class="text-muted">No skills added yet.</p>
+                            {% endif %}
+                            <div class="text-end">
+                                <a href="{% url 'workers:worker_skill_add' %}" class="btn btn-sm btn-outline-primary">Add Skill</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

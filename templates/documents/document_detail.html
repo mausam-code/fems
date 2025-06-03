@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}Document Details{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>{{ object.file_name }}</h1>
+    <div class="card">
+        <div class="card-header">
+            Document ID: {{ object.id }}
+        </div>
+        <div class="card-body">
+            <p><strong>File Name:</strong> {{ object.file_name }}</p>
+            <p><strong>User ID:</strong> {{ object.user_id }}</p>
+            <p><strong>User Type:</strong> {{ object.user_type }}</p>
+            <p><strong>Document Type:</strong> {{ object.document_type }}</p>
+            <p><strong>File Path:</strong> <a href="{{ object.file_path }}" target="_blank">View Document</a></p> {# Assuming file_path is a URL or accessible path #}
+            <p><strong>File Type:</strong> {{ object.file_type }}</p>
+            <p><strong>File Size:</strong> {{ object.file_size|filesizeformat }}</p>
+            <p><strong>Extracted Data:</strong></p>
+            <pre>{{ object.extracted_data|json_script:"extracted-data" }}</pre>
+            <p><strong>Created At:</strong> {{ object.created_at }}</p>
+            <p><strong>Updated At:</strong> {{ object.updated_at }}</p>
+        </div>
+        <div class="card-footer">
+            <a href="#" class="btn btn-secondary">Back to List</a> {# Placeholder URL #}
+            <a href="#" class="btn btn-danger">Delete</a> {# Placeholder URL #}
+        </div>
+    </div>
+</div>
+{% endblock %}

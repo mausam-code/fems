@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}Verify Document{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Verify Document</h1>
+    <div class="card mb-4">
+        <div class="card-header">
+            Document Details
+        </div>
+        <div class="card-body">
+            <p><strong>Document Type:</strong> {{ document.document_type }}</p>
+            <p><strong>Application ID:</strong> {{ document.application.id }}</p>
+            <p><strong>Worker:</strong> {{ document.application.worker.user.get_full_name|default:document.application.worker.user.email }}</p>
+            <p><strong>Uploaded At:</strong> {{ document.created_at }}</p>
+            <p><strong>Current Verification Status:</strong> 
+                {% if document.is_verified %}
+                <span class="badge bg-success">Verified</span>
+                {% elif document.is_verified == False %}
+                <span class="badge bg-danger">Rejected</span>
+                {% else %}
+                <span class="badge bg-warning text-dark">Pending</span>
+                {% endif %}
+            </p>
+            
+            <div class="mb-3">
+                <a href="{{ document.file.url }}" target="_blank" class="btn btn-primary">
+                    <i class="bi bi-file-earmark"></i> View Document
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="card">
+        <div class="card-header">
+            Verification Form
+        </div>
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                {{ form|crispy }}
+                <button type="submit" class="btn btn-success">
+                    <i class="bi bi-check-circle"></i> Submit Verification
+                </button>
+                <a href="{% url 'applications:application_document_list' document.application.id %}" class="btn btn-secondary">
+                    <i class="bi bi-x"></i> Cancel
+                </a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}{% if form.instance.pk %}Edit Vacancy{% else %}Post Vacancy{% endif %}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>{% if form.instance.pk %}Edit Vacancy{% else %}Post New Vacancy{% endif %}</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <button type="submit" class="btn btn-success">{% if form.instance.pk %}Save Changes{% else %}Post Vacancy{% endif %}</button>
+        <a href="#" class="btn btn-secondary">Cancel</a> {# Placeholder URL for vacancy list #}
+    </form>
+</div>
+{% endblock %}

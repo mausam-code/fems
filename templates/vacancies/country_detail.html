@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ country.name }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>{{ country.name }}</h1>
+        <div>
+            <a href="{% url 'vacancies:country_list' %}" class="btn btn-secondary">Back to Countries</a>
+            {% if perms.vacancies.change_country %}
+            <a href="{% url 'vacancies:country_update' country.id %}" class="btn btn-warning">Edit Country</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Country Details -->
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Country Details</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <h6 class="text-muted">Country Code</h6>
+                        <p>{{ country.code }}</p>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <h6 class="text-muted">Companies</h6>
+                        <p>{{ country.company_set.count }}</p>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <h6 class="text-muted">Vacancies</h6>
+                        <p>{{ country.vacancy_set.count }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Companies in Country -->
+        <div class="col-md-8 mb-4">
+            <div class="card">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Companies in {{ country.name }}</h5>
+                    {% if perms.vacancies.add_company %}
+                    <a href="{% url 'vacancies:company_create' %}?country={{ country.id }}" class="btn btn-light btn-sm">Add Company</a>
+                    {% endif %}
+                </div>
+                <div class="card-body p-0">
+                    {% if companies %}
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Website</th>
+                                    <th>Vacancies</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for company in companies %}
+                                <tr>
+                                    <td>{{ company.name }}</td>
+                                    <td>
+                                        {% if company.website %}
+                                        <a href="{{ company.website }}" target="_blank">{{ company.website }}</a>
+                                        {% else %}
+                                        <span class="text-muted">N/A</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ company.vacancy_set.count }}</td>
+                                    <td>
+                                        <a href="{% url 'vacancies:company_detail' company.id %}" class="btn btn-sm btn-primary">View</a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="p-4 text-center">
+                        <p class="text-muted">No companies found in this country.</p>
+                        {% if perms.vacancies.add_company %}
+                        <a href="{% url 'vacancies:company_create' %}?country={{ country.id }}" class="btn btn-primary">Add First Company</a>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Vacancies in Country -->
+    <div class="card mt-4">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Vacancies in {{ country.name }}</h5>
+            {% if perms.vacancies.add_vacancy %}
+            <a href="{% url 'vacancies:vacancy_create' %}?country={{ country.id }}" class="btn btn-light btn-sm">Add Vacancy</a>
+            {% endif %}
+        </div>
+        <div class="card-body p-0">
+            {% if vacancies %}
+            <div class="table-responsive">
+                <table class="table table-striped table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Company</th>
+                            <th>Salary</th>
+                            <th>Status</th>
+                            <th>Posted</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for vacancy in vacancies %}
+                        <tr>
+                            <td>{{ vacancy.title }}</td>
+                            <td>{{ vacancy.company.name }}</td>
+                            <td>{{ vacancy.salary }}</td>
+                            <td>
+                                {% if vacancy.is_active %}
+                                <span class="badge bg-success">Active</span>
+                                {% else %}
+                                <span class="badge bg-secondary">Inactive</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ vacancy.created_at|date:"M d, Y" }}</td>
+                            <td>
+                                <a href="{% url 'vacancies:vacancy_detail' vacancy.id %}" class="btn btn-sm btn-primary">View</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="p-4 text-center">
+                <p class="text-muted">No vacancies found in this country.</p>
+                {% if perms.vacancies.add_vacancy %}
+                <a href="{% url 'vacancies:vacancy_create' %}?country={{ country.id }}" class="btn btn-primary">Add First Vacancy</a>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

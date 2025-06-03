@@ -1,0 +1,211 @@
+{% extends 'base.html' %}
+
+{% block title %}Register - FEMS{% endblock %}
+
+{% block extra_css %}
+<style>
+    .register-container {
+        max-width: 600px;
+        margin: 50px auto;
+    }
+    
+    .register-header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    
+    .register-header h1 {
+        color: var(--secondary-color);
+        font-weight: 600;
+    }
+    
+    .register-form .form-control {
+        padding: 12px;
+        border-radius: 6px;
+        margin-bottom: 15px;
+    }
+    
+    .register-form .btn-register {
+        padding: 12px;
+        font-weight: 600;
+        width: 100%;
+        margin-top: 10px;
+    }
+    
+    .register-footer {
+        text-align: center;
+        margin-top: 20px;
+    }
+    
+    .register-footer a {
+        color: var(--primary-color);
+        text-decoration: none;
+    }
+    
+    .register-footer a:hover {
+        text-decoration: underline;
+    }
+    
+    .form-text {
+        font-size: 0.85rem;
+        color: #6c757d;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="register-container">
+    <div class="register-header">
+        <h1>Create Account</h1>
+        <p class="text-muted">Join the Foreign Employment Management System</p>
+    </div>
+    
+    <div class="card">
+        <div class="card-body p-4">
+            <form class="register-form" method="post" action="{% url 'accounts:register' %}">
+                {% csrf_token %}
+                
+                {% if form.non_field_errors %}
+                <div class="alert alert-danger">
+                    {% for error in form.non_field_errors %}
+                    {{ error }}
+                    {% endfor %}
+                </div>
+                {% endif %}
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="id_first_name" class="form-label">First Name</label>
+                        <input type="text" name="first_name" id="id_first_name" class="form-control {% if form.first_name.errors %}is-invalid{% endif %}" placeholder="Enter your first name" required>
+                        {% if form.first_name.errors %}
+                        <div class="invalid-feedback">
+                            {% for error in form.first_name.errors %}
+                            {{ error }}
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <label for="id_last_name" class="form-label">Last Name</label>
+                        <input type="text" name="last_name" id="id_last_name" class="form-control {% if form.last_name.errors %}is-invalid{% endif %}" placeholder="Enter your last name" required>
+                        {% if form.last_name.errors %}
+                        <div class="invalid-feedback">
+                            {% for error in form.last_name.errors %}
+                            {{ error }}
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="id_email" class="form-label">Email Address</label>
+                    <input type="email" name="email" id="id_email" class="form-control {% if form.email.errors %}is-invalid{% endif %}" placeholder="Enter your email" required>
+                    {% if form.email.errors %}
+                    <div class="invalid-feedback">
+                        {% for error in form.email.errors %}
+                        {{ error }}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    <div class="form-text">We'll never share your email with anyone else.</div>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="id_phone_number" class="form-label">Phone Number</label>
+                    <input type="tel" name="phone_number" id="id_phone_number" class="form-control {% if form.phone_number.errors %}is-invalid{% endif %}" placeholder="Enter your phone number">
+                    {% if form.phone_number.errors %}
+                    <div class="invalid-feedback">
+                        {% for error in form.phone_number.errors %}
+                        {{ error }}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <div class="mb-3">
+                    <label for="id_user_type" class="form-label">Account Type</label>
+                    <select name="user_type" id="id_user_type" class="form-select {% if form.user_type.errors %}is-invalid{% endif %}" required>
+                        <option value="" selected disabled>Select account type</option>
+                        <option value="worker">Worker</option>
+                        <option value="employee">Employee</option>
+                    </select>
+                    {% if form.user_type.errors %}
+                    <div class="invalid-feedback">
+                        {% for error in form.user_type.errors %}
+                        {{ error }}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <div class="mb-3">
+                    <label for="id_password" class="form-label">Password</label>
+                    <input type="password" name="password" id="id_password" class="form-control {% if form.password.errors %}is-invalid{% endif %}" placeholder="Create a password" required>
+                    {% if form.password.errors %}
+                    <div class="invalid-feedback">
+                        {% for error in form.password.errors %}
+                        {{ error }}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    <div class="form-text">Password must be at least 8 characters long and contain letters, numbers, and special characters.</div>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="id_password2" class="form-label">Confirm Password</label>
+                    <input type="password" name="password2" id="id_password2" class="form-control {% if form.password2.errors %}is-invalid{% endif %}" placeholder="Confirm your password" required>
+                    {% if form.password2.errors %}
+                    <div class="invalid-feedback">
+                        {% for error in form.password2.errors %}
+                        {{ error }}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <div class="mb-3 form-check">
+                    <input type="checkbox" class="form-check-input" id="terms" required>
+                    <label class="form-check-label" for="terms">I agree to the <a href="#" target="_blank">Terms of Service</a> and <a href="#" target="_blank">Privacy Policy</a></label>
+                </div>
+                
+                <button type="submit" class="btn btn-primary btn-register">Create Account</button>
+            </form>
+        </div>
+    </div>
+    
+    <div class="register-footer">
+        <p>Already have an account? <a href="{% url 'accounts:login' %}">Sign in here</a></p>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Add any registration-specific JavaScript here
+    document.addEventListener('DOMContentLoaded', function() {
+        const firstNameField = document.getElementById('id_first_name');
+        if (firstNameField) {
+            firstNameField.focus();
+        }
+        
+        // Password validation
+        const password = document.getElementById('id_password');
+        const confirmPassword = document.getElementById('id_password2');
+        
+        function validatePassword() {
+            if (password.value !== confirmPassword.value) {
+                confirmPassword.setCustomValidity("Passwords don't match");
+            } else {
+                confirmPassword.setCustomValidity('');
+            }
+        }
+        
+        if (password && confirmPassword) {
+            password.addEventListener('change', validatePassword);
+            confirmPassword.addEventListener('keyup', validatePassword);
+        }
+    });
+</script>
+{% endblock %}

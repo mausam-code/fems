@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block title %}Manage Applications{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Manage Applications</h1>
+        <div>
+            <a href="{% url 'applications:application_list' %}?status=Under+Review" class="btn btn-info">Pending Review</a>
+            <a href="{% url 'applications:application_list' %}?status=Interview+Scheduled" class="btn btn-warning">Interviews</a>
+        </div>
+    </div>
+
+    {% if applications %}
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Applications</h5>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Worker</th>
+                            <th>Vacancy</th>
+                            <th>Status</th>
+                            <th>Created</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for application in applications %}
+                        <tr>
+                            <td>{{ application.id }}</td>
+                            <td>{{ application.worker.user.get_full_name }}</td>
+                            <td>{{ application.vacancy.title }}</td>
+                            <td>
+                                {% if application.status == 'Pending' %}
+                                <span class="badge bg-secondary">Pending</span>
+                                {% elif application.status == 'Under Review' %}
+                                <span class="badge bg-info">Under Review</span>
+                                {% elif application.status == 'Interview Scheduled' %}
+                                <span class="badge bg-warning">Interview</span>
+                                {% elif application.status == 'Selected' %}
+                                <span class="badge bg-success">Selected</span>
+                                {% elif application.status == 'Rejected' %}
+                                <span class="badge bg-danger">Rejected</span>
+                                {% else %}
+                                <span class="badge bg-dark">{{ application.status }}</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ application.created_at|date:"M d, Y" }}</td>
+                            <td>
+                                <a href="{% url 'applications:application_detail' application.id %}" class="btn btn-sm btn-primary">View</a>
+                                <a href="{% url 'applications:application_status_update' application.id %}" class="btn btn-sm btn-warning">Update Status</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+        <p>No applications found.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

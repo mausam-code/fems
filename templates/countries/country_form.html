@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}{% if form.instance.pk %}Edit Country{% else %}Create Country{% endif %}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>{% if form.instance.pk %}Edit Country{% else %}Create New Country{% endif %}</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <button type="submit" class="btn btn-success">{% if form.instance.pk %}Save Changes{% else %}Create Country{% endif %}</button>
+        <a href="#" class="btn btn-secondary">Cancel</a> {# Placeholder URL for country list #}
+    </form>
+</div>
+{% endblock %}

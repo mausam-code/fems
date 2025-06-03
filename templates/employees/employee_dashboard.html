@@ -1,0 +1,221 @@
+{% extends 'base.html' %}
+
+{% block title %}Employee Dashboard{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Employee Dashboard</h1>
+    <p class="lead">Welcome, {{ user.get_full_name }}!</p>
+    
+    <!-- Stats Section -->
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Statistics</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                {% if user.employee_profile.permissions.can_verify_applications %}
+                <div class="col-md-4 mb-3">
+                    <div class="card">
+                        <div class="card-header">Applications</div>
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <span>Total:</span>
+                                <span class="badge bg-primary">{{ total_applications }}</span>
+                            </div>
+                            <div class="d-flex justify-content-between mt-2">
+                                <span>Pending:</span>
+                                <span class="badge bg-warning">{{ pending_applications }}</span>
+                            </div>
+                            <div class="d-flex justify-content-between mt-2">
+                                <span>Approved:</span>
+                                <span class="badge bg-success">{{ approved_applications }}</span>
+                            </div>
+                            <div class="d-flex justify-content-between mt-2">
+                                <span>Rejected:</span>
+                                <span class="badge bg-danger">{{ rejected_applications }}</span>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <a href="{% url 'employees:employee_applications' %}" class="btn btn-sm btn-primary w-100">Manage Applications</a>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                
+                {% if user.employee_profile.permissions.can_verify_workers %}
+                <div class="col-md-4 mb-3">
+                    <div class="card">
+                        <div class="card-header">Workers</div>
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <span>Total:</span>
+                                <span class="badge bg-primary">{{ total_workers }}</span>
+                            </div>
+                            <div class="d-flex justify-content-between mt-2">
+                                <span>Verified:</span>
+                                <span class="badge bg-success">{{ verified_workers }}</span>
+                            </div>
+                            <div class="d-flex justify-content-between mt-2">
+                                <span>Unverified:</span>
+                                <span class="badge bg-warning">{{ unverified_workers }}</span>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <a href="{% url 'employees:employee_workers' %}" class="btn btn-sm btn-primary w-100">Manage Workers</a>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                
+                {% if user.employee_profile.permissions.can_manage_vacancies %}
+                <div class="col-md-4 mb-3">
+                    <div class="card">
+                        <div class="card-header">Vacancies</div>
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <span>Total:</span>
+                                <span class="badge bg-primary">{{ total_vacancies }}</span>
+                            </div>
+                            <div class="d-flex justify-content-between mt-2">
+                                <span>Active:</span>
+                                <span class="badge bg-success">{{ active_vacancies }}</span>
+                            </div>
+                            <div class="d-flex justify-content-between mt-2">
+                                <span>Inactive:</span>
+                                <span class="badge bg-danger">{{ inactive_vacancies }}</span>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <a href="{% url 'employees:employee_vacancies' %}" class="btn btn-sm btn-primary w-100">Manage Vacancies</a>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <!-- Recent Items Section -->
+    <div class="row">
+        {% if user.employee_profile.permissions.can_verify_applications and recent_applications %}
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Recent Applications</h5>
+                </div>
+                <div class="card-body p-0">
+                    <ul class="list-group list-group-flush">
+                        {% for application in recent_applications %}
+                        <li class="list-group-item">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>{{ application.worker.user.get_full_name }}</strong><br>
+                                    <small>{{ application.vacancy.title }}</small>
+                                </div>
+                                <div>
+                                    {% if application.status == 'Pending' %}
+                                    <span class="badge bg-secondary">Pending</span>
+                                    {% elif application.status == 'Under Review' %}
+                                    <span class="badge bg-info">Under Review</span>
+                                    {% elif application.status == 'Interview Scheduled' %}
+                                    <span class="badge bg-warning">Interview</span>
+                                    {% elif application.status == 'Selected' %}
+                                    <span class="badge bg-success">Selected</span>
+                                    {% elif application.status == 'Rejected' %}
+                                    <span class="badge bg-danger">Rejected</span>
+                                    {% else %}
+                                    <span class="badge bg-dark">{{ application.status }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="mt-2">
+                                <a href="{% url 'applications:application_detail' application.id %}" class="btn btn-sm btn-primary">View</a>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="card-footer text-center">
+                    <a href="{% url 'employees:employee_applications' %}" class="btn btn-sm btn-primary">View All</a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        
+        {% if user.employee_profile.permissions.can_verify_workers and recent_workers %}
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Recent Workers</h5>
+                </div>
+                <div class="card-body p-0">
+                    <ul class="list-group list-group-flush">
+                        {% for worker in recent_workers %}
+                        <li class="list-group-item">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>{{ worker.user.get_full_name }}</strong><br>
+                                    <small>{{ worker.user.email }}</small>
+                                </div>
+                                <div>
+                                    {% if worker.is_verified %}
+                                    <span class="badge bg-success">Verified</span>
+                                    {% else %}
+                                    <span class="badge bg-warning">Unverified</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="mt-2">
+                                <a href="{% url 'workers:worker_detail' worker.id %}" class="btn btn-sm btn-primary">View</a>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="card-footer text-center">
+                    <a href="{% url 'employees:employee_workers' %}" class="btn btn-sm btn-primary">View All</a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        
+        {% if user.employee_profile.permissions.can_manage_vacancies and recent_vacancies %}
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Recent Vacancies</h5>
+                </div>
+                <div class="card-body p-0">
+                    <ul class="list-group list-group-flush">
+                        {% for vacancy in recent_vacancies %}
+                        <li class="list-group-item">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>{{ vacancy.title }}</strong><br>
+                                    <small>{{ vacancy.company.name }}</small>
+                                </div>
+                                <div>
+                                    {% if vacancy.is_active %}
+                                    <span class="badge bg-success">Active</span>
+                                    {% else %}
+                                    <span class="badge bg-danger">Inactive</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="mt-2">
+                                <a href="{% url 'vacancies:vacancy_detail' vacancy.id %}" class="btn btn-sm btn-primary">View</a>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="card-footer text-center">
+                    <a href="{% url 'employees:employee_vacancies' %}" class="btn btn-sm btn-primary">View All</a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

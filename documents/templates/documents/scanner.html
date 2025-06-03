@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block title %}Document Scanner{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2>Document Scanner</h2>
+            <p class="text-muted">Upload a document to extract information using OCR technology</p>
+        </div>
+        <div class="col-md-4 text-end">
+            <a href="{% url 'documents:document_list' %}" class="btn btn-outline-secondary">
+                <i class="fas fa-list"></i> My Documents
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 mx-auto">
+            <div class="card shadow-sm">
+                <div class="card-header bg-light">
+                    <h5 class="card-title mb-0">Upload Document</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label for="id_document_type" class="form-label">Document Type</label>
+                            <select name="document_type" id="id_document_type" class="form-select">
+                                <option value="passport">Passport</option>
+                                <option value="id_card">ID Card</option>
+                                <option value="certificate">Certificate</option>
+                                <option value="other">Other</option>
+                            </select>
+                            <div class="form-text">Select the type of document you're uploading</div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="id_document" class="form-label">Document Image</label>
+                            <input type="file" name="document" id="id_document" class="form-control" accept="image/*" required>
+                            <div class="form-text">Upload a clear image of your document for best results</div>
+                        </div>
+                        
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i> For best results:
+                            <ul class="mb-0 mt-2">
+                                <li>Ensure the document is well-lit and clearly visible</li>
+                                <li>Avoid glare or shadows on the document</li>
+                                <li>Make sure all text is visible and not cut off</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-scanner me-2"></i> Scan Document
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

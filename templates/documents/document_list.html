@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}Documents List{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Documents</h1>
+    <a href="#" class="btn btn-primary mb-3">Upload New Document</a> {# Placeholder URL #}
+    <ul class="list-group">
+        {% for document in object_list %}
+        <li class="list-group-item">
+            <a href="#">{{ document.file_name }}</a> {# Placeholder URL #}
+            <p><small>Type: {{ document.document_type }} - User: {{ document.user_id }} ({{ document.user_type }})</small></p>
+        </li>
+        {% empty %}
+        <li class="list-group-item">No documents found.</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

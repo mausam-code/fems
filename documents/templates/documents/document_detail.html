@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+
+{% block title %}Document Details{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2>Document Details</h2>
+        </div>
+        <div class="col-md-4 text-end">
+            <a href="{% url 'documents:document_list' %}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left"></i> Back to Documents
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Document Information Card -->
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-light">
+                    <h5 class="card-title mb-0">Document Information</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <strong>Name:</strong>
+                        <p>{{ document.name }}</p>
+                    </div>
+                    <div class="mb-3">
+                        <strong>Type:</strong>
+                        <p>
+                            {% if document.document_type == 'passport' %}
+                            <span class="badge bg-primary">Passport</span>
+                            {% elif document.document_type == 'id_card' %}
+                            <span class="badge bg-info">ID Card</span>
+                            {% elif document.document_type == 'certificate' %}
+                            <span class="badge bg-success">Certificate</span>
+                            {% else %}
+                            <span class="badge bg-secondary">Other</span>
+                            {% endif %}
+                        </p>
+                    </div>
+                    <div class="mb-3">
+                        <strong>Upload Date:</strong>
+                        <p>{{ document.created_at|date:"F d, Y" }}</p>
+                    </div>
+                    <div class="mb-3">
+                        <a href="{{ document.file.url }}" class="btn btn-primary w-100" target="_blank">
+                            <i class="fas fa-download me-2"></i> Download Document
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Document Preview -->
+        <div class="col-md-8 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-light">
+                    <h5 class="card-title mb-0">Document Preview</h5>
+                </div>
+                <div class="card-body text-center">
+                    {% if document.file %}
+                    <img src="{{ document.file.url }}" class="img-fluid border" alt="Document Preview" style="max-height: 400px;">
+                    {% else %}
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle me-2"></i> No preview available
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Extracted Information -->
+        <div class="col-12 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-light">
+                    <h5 class="card-title mb-0">Extracted Information</h5>
+                </div>
+                <div class="card-body">
+                    {% if passport_info %}
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Field</th>
+                                    <th>Value</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for field, value in passport_info.items %}
+                                <tr>
+                                    <td><strong>{{ field|title }}</strong></td>
+                                    <td>{{ value }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% elif extracted_text %}
+                    <div class="card">
+                        <div class="card-body bg-light">
+                            <pre class="mb-0">{{ extracted_text }}</pre>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i> No text was extracted from this document.
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

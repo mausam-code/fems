@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+
+{% block title %}Worker Details{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Worker Profile</h1>
+        {% if user.is_staff or user.employee_profile.permissions.can_manage_workers or worker.user == user %}
+        <a href="{% url 'workers:worker_update' worker.pk %}" class="btn btn-warning">Edit Profile</a>
+        {% endif %}
+    </div>
+    
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4>Personal Information</h4>
+                </div>
+                <div class="card-body">
+                    {% if worker.profile_picture %}
+                    <div class="text-center mb-3">
+                        <img src="{{ worker.profile_picture.url }}" alt="Profile Picture" class="img-fluid rounded-circle" style="max-width: 150px;">
+                    </div>
+                    {% endif %}
+                    <p><strong>Name:</strong> {{ worker.user.get_full_name }}</p>
+                    <p><strong>Date of Birth:</strong> {{ worker.date_of_birth }}</p>
+                    <p><strong>Gender:</strong> {{ worker.gender }}</p>
+                    <p><strong>Nationality:</strong> {{ worker.nationality }}</p>
+                    <p><strong>Passport Number:</strong> {{ worker.passport_number }}</p>
+                    <p><strong>Address:</strong> {{ worker.address }}</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h4>Professional Information</h4>
+                </div>
+                <div class="card-body">
+                    <p><strong>Skills:</strong> {{ worker.skills }}</p>
+                    <p><strong>Experience:</strong> {{ worker.experience_years }} years</p>
+                    <p><strong>Education Level:</strong> {{ worker.education_level }}</p>
+                    <p><strong>Preferred Job Type:</strong> {{ worker.preferred_job_type }}</p>
+                    <p><strong>Preferred Country:</strong> {{ worker.preferred_country }}</p>
+                    
+                    {% if worker.cv_file %}
+                    <p>
+                        <strong>CV:</strong> 
+                        <a href="{{ worker.cv_file.url }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                            <i class="fas fa-file-pdf"></i> Download CV
+                        </a>
+                    </p>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h4>Education</h4>
+                </div>
+                <div class="card-body">
+                    {% if worker.educations.all %}
+                        <div class="list-group">
+                        {% for education in worker.educations.all %}
+                            <div class="list-group-item">
+                                <h5>{{ education.institution }}</h5>
+                                <p><strong>Degree:</strong> {{ education.degree }}</p>
+                                <p><strong>Field of Study:</strong> {{ education.field_of_study }}</p>
+                                <p><strong>Period:</strong> {{ education.start_date }} - {% if education.end_date %}{{ education.end_date }}{% else %}Present{% endif %}</p>
+                            </div>
+                        {% endfor %}
+                        </div>
+                    {% else %}
+                        <p>No education records found.</p>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h4>Work Experience</h4>
+                </div>
+                <div class="card-body">
+                    {% if worker.experiences.all %}
+                        <div class="list-group">
+                        {% for experience in worker.experiences.all %}
+                            <div class="list-group-item">
+                                <h5>{{ experience.company }}</h5>
+                                <p><strong>Position:</strong> {{ experience.position }}</p>
+                                <p><strong>Period:</strong> {{ experience.start_date }} - {% if experience.end_date %}{{ experience.end_date }}{% else %}Present{% endif %}</p>
+                                <p><strong>Description:</strong> {{ experience.description }}</p>
+                            </div>
+                        {% endfor %}
+                        </div>
+                    {% else %}
+                        <p>No work experience records found.</p>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h4>Applications</h4>
+                </div>
+                <div class="card-body">
+                    {% if worker.applications.all %}
+                        <div class="list-group">
+                        {% for application in worker.applications.all %}
+                            <div class="list-group-item">
+                                <h5>
+                                    <a href="{% url 'applications:application_detail' application.pk %}">{{ application.vacancy.title }}</a>
+                                </h5>
+                                <p><strong>Status:</strong> <span class="badge {% if application.status == 'approved' %}bg-success{% elif application.status == 'rejected' %}bg-danger{% else %}bg-warning{% endif %}">{{ application.status|title }}</span></p>
+                                <p><strong>Applied:</strong> {{ application.created_at }}</p>
+                            </div>
+                        {% endfor %}
+                        </div>
+                    {% else %}
+                        <p>No applications found for this worker.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+        <div class="card-footer">
+            <a href="#" class="btn btn-secondary">Back to List</a> {# Placeholder URL #}
+            <a href="#" class="btn btn-warning">Edit Profile</a> {# Placeholder URL #}
+            {% if user.is_staff or user.profile.role == 'employee' %} {# Example role check for verification #}
+                {% if object.verification_status == "Pending" %}
+                    <a href="#" class="btn btn-info">Verify Worker</a> {# Placeholder URL for verification #}
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}Upload Document{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Upload Document</h1>
+    <div class="card mb-4">
+        <div class="card-header">
+            Application ID: {{ application.id }}
+        </div>
+        <div class="card-body">
+            <p><strong>Worker:</strong> {{ application.worker.user.get_full_name|default:application.worker.user.email }}</p>
+            <p><strong>Status:</strong> {{ application.get_status_display }}</p>
+            <p><strong>Created At:</strong> {{ application.created_at }}</p>
+        </div>
+    </div>
+    
+    <div class="card">
+        <div class="card-header">
+            Document Upload Form
+        </div>
+        <div class="card-body">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form|crispy }}
+                <button type="submit" class="btn btn-success">
+                    <i class="bi bi-upload"></i> Upload Document
+                </button>
+                <a href="{% url 'applications:application_document_list' application.id %}" class="btn btn-secondary">
+                    <i class="bi bi-x"></i> Cancel
+                </a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

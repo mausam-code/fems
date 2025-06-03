@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}Vacancies List{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Vacancies</h1>
+    <a href="#" class="btn btn-primary mb-3">Post New Vacancy</a> {# Placeholder URL #}
+    <ul class="list-group">
+        {% for vacancy in object_list %}
+        <li class="list-group-item">
+            <a href="#">{{ vacancy.title }} at {{ vacancy.company.name }}</a> {# Placeholder URL #}
+            <p><small>Location: {{ vacancy.location }} - Status: {{ vacancy.status }}</small></p>
+        </li>
+        {% empty %}
+        <li class="list-group-item">No vacancies found.</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

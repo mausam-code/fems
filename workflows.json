@@ -1,0 +1,209 @@
+{
+  "workflows": [
+    {
+      "name": "Worker Onboarding Flow",
+      "description": "Process for onboarding new workers into the system",
+      "steps": [
+        {
+          "step": 1,
+          "name": "Registration",
+          "description": "Worker registers in the system with basic information",
+          "roles": ["worker"],
+          "url": "/accounts/register/"
+        },
+        {
+          "step": 2,
+          "name": "Profile Creation",
+          "description": "Worker completes their profile with personal and professional details",
+          "roles": ["worker"],
+          "url": "/workers/profile/create/"
+        },
+        {
+          "step": 3,
+          "name": "Document Upload",
+          "description": "Worker uploads required identification and qualification documents",
+          "roles": ["worker"],
+          "url": "/workers/documents/upload/"
+        },
+        {
+          "step": 4,
+          "name": "Profile Verification",
+          "description": "Employee verifies worker profile and documents",
+          "roles": ["employee", "staff"],
+          "url": "/workers/verify/{worker_id}/"
+        },
+        {
+          "step": 5,
+          "name": "Onboarding Complete",
+          "description": "Worker is fully onboarded and can browse and apply for vacancies",
+          "roles": ["worker"],
+          "url": "/vacancies/list/"
+        }
+      ]
+    },
+    {
+      "name": "Application Processing Flow",
+      "description": "Process for handling job applications from submission to completion",
+      "steps": [
+        {
+          "step": 1,
+          "name": "Application Submission",
+          "description": "Worker submits application for a specific vacancy",
+          "roles": ["worker"],
+          "url": "/applications/create/"
+        },
+        {
+          "step": 2,
+          "name": "Initial Review",
+          "description": "Employee reviews application and changes status to 'processing' if complete",
+          "roles": ["employee", "staff"],
+          "url": "/applications/status-update/{application_id}/"
+        },
+        {
+          "step": 3,
+          "name": "Document Verification",
+          "description": "Employee verifies all required documents for the application",
+          "roles": ["employee", "staff"],
+          "url": "/applications/documents/{application_id}/"
+        },
+        {
+          "step": 4,
+          "name": "Final Decision",
+          "description": "Employee makes final decision on application (approved/rejected)",
+          "roles": ["employee", "staff"],
+          "url": "/applications/status-update/{application_id}/"
+        },
+        {
+          "step": 5,
+          "name": "Completion",
+          "description": "For approved applications, employee marks as 'completed' when all processes are finished",
+          "roles": ["employee", "staff"],
+          "url": "/applications/status-update/{application_id}/"
+        }
+      ]
+    },
+    {
+      "name": "Document Management Flow",
+      "description": "Process for handling document uploads, verification, and management",
+      "steps": [
+        {
+          "step": 1,
+          "name": "Document Upload",
+          "description": "Worker uploads required documents for their application",
+          "roles": ["worker"],
+          "url": "/applications/documents/create/{application_id}/"
+        },
+        {
+          "step": 2,
+          "name": "Document Review",
+          "description": "Employee reviews uploaded documents for completeness and clarity",
+          "roles": ["employee", "staff"],
+          "url": "/applications/documents/{application_id}/"
+        },
+        {
+          "step": 3,
+          "name": "Document Verification",
+          "description": "Employee verifies the authenticity of documents",
+          "roles": ["employee", "staff"],
+          "url": "/applications/documents/verify/{document_id}/"
+        },
+        {
+          "step": 4,
+          "name": "Additional Documents Request",
+          "description": "If needed, employee requests additional documents from worker",
+          "roles": ["employee", "staff"],
+          "url": "/applications/notes/create/{application_id}/"
+        },
+        {
+          "step": 5,
+          "name": "Document Approval",
+          "description": "Employee approves all documents as verified and complete",
+          "roles": ["employee", "staff"],
+          "url": "/applications/status-update/{application_id}/"
+        }
+      ]
+    },
+    {
+      "name": "Job Application Flow",
+      "description": "Process for workers to find and apply for job vacancies",
+      "steps": [
+        {
+          "step": 1,
+          "name": "Browse Vacancies",
+          "description": "Worker browses available job vacancies",
+          "roles": ["worker"],
+          "url": "/vacancies/list/"
+        },
+        {
+          "step": 2,
+          "name": "View Vacancy Details",
+          "description": "Worker views detailed information about a specific vacancy",
+          "roles": ["worker"],
+          "url": "/vacancies/detail/{vacancy_id}/"
+        },
+        {
+          "step": 3,
+          "name": "Submit Application",
+          "description": "Worker submits application for the selected vacancy",
+          "roles": ["worker"],
+          "url": "/applications/create/"
+        },
+        {
+          "step": 4,
+          "name": "Upload Supporting Documents",
+          "description": "Worker uploads required documents for the application",
+          "roles": ["worker"],
+          "url": "/applications/documents/create/{application_id}/"
+        },
+        {
+          "step": 5,
+          "name": "Track Application Status",
+          "description": "Worker tracks the status of their submitted application",
+          "roles": ["worker"],
+          "url": "/applications/detail/{application_id}/"
+        }
+      ]
+    },
+    {
+      "name": "Employee Management Flow",
+      "description": "Process for managing employees and their permissions",
+      "steps": [
+        {
+          "step": 1,
+          "name": "Employee Registration",
+          "description": "Admin registers new employee in the system",
+          "roles": ["staff"],
+          "url": "/accounts/register/employee/"
+        },
+        {
+          "step": 2,
+          "name": "Assign Permissions",
+          "description": "Admin assigns specific permissions to the employee",
+          "roles": ["staff"],
+          "url": "/employees/permissions/{employee_id}/"
+        },
+        {
+          "step": 3,
+          "name": "Employee Training",
+          "description": "Employee completes required training modules",
+          "roles": ["employee"],
+          "url": "/employees/training/"
+        },
+        {
+          "step": 4,
+          "name": "Performance Monitoring",
+          "description": "Admin monitors employee performance and application processing metrics",
+          "roles": ["staff"],
+          "url": "/employees/performance/"
+        },
+        {
+          "step": 5,
+          "name": "Permission Updates",
+          "description": "Admin updates employee permissions as needed",
+          "roles": ["staff"],
+          "url": "/employees/permissions/{employee_id}/update/"
+        }
+      ]
+    }
+  ]
+}

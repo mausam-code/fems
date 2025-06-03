@@ -1,0 +1,375 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - FEMS{% endblock %}
+
+{% block extra_css %}
+<style>
+    .dashboard-header {
+        background-color: var(--secondary-color);
+        color: white;
+        padding: 30px 0;
+        margin-bottom: 30px;
+        border-radius: 8px;
+    }
+    
+    .dashboard-header h1 {
+        font-weight: 600;
+    }
+    
+    .dashboard-card {
+        height: 100%;
+        transition: transform 0.3s;
+    }
+    
+    .dashboard-card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .dashboard-card .card-header {
+        font-size: 1.1rem;
+    }
+    
+    .dashboard-card .card-body {
+        padding: 20px;
+    }
+    
+    .dashboard-icon {
+        font-size: 2.5rem;
+        margin-bottom: 15px;
+        color: var(--primary-color);
+    }
+    
+    .dashboard-stats {
+        background-color: var(--light-color);
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 30px;
+    }
+    
+    .stat-item {
+        text-align: center;
+        padding: 15px;
+        cursor: pointer;
+        transition: transform 0.2s;
+    }
+    
+    .stat-item:hover {
+        transform: scale(1.05);
+        background-color: rgba(0,0,0,0.03);
+        border-radius: 8px;
+    }
+    
+    .stat-number {
+        font-size: 2rem;
+        font-weight: bold;
+        color: var(--primary-color);
+    }
+    
+    .stat-label {
+        font-size: 0.9rem;
+        color: #777;
+        margin-top: 5px;
+    }
+    
+    .crud-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 15px;
+    }
+    
+    .crud-btn {
+        padding: 5px 10px;
+        font-size: 0.8rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-header text-center">
+    <div class="container">
+        <h1>Welcome, {{ user.first_name }} {{ user.last_name }}!</h1>
+        <p>This is your Foreign Employment Management System dashboard</p>
+    </div>
+</div>
+
+<div class="container">
+    <!-- Stats Section -->
+    <div class="dashboard-stats">
+        <div class="row">
+            {% if user.user_type == 'worker' %}
+            <div class="col-md-3 stat-item" onclick="window.location='{% url "applications:application_list" %}'">
+                <div class="stat-number">{{ total_applications }}</div>
+                <div class="stat-label">Applications</div>
+            </div>
+            <div class="col-md-3 stat-item" onclick="window.location='{% url "documents:document_list" %}'">
+                <div class="stat-number">{{ total_documents }}</div>
+                <div class="stat-label">Documents</div>
+            </div>
+            <div class="col-md-3 stat-item" onclick="window.location='{% url "applications:application_list" %}?status=Interview+Scheduled'">
+                <div class="stat-number">{{ total_interviews }}</div>
+                <div class="stat-label">Interviews</div>
+            </div>
+            <div class="col-md-3 stat-item" onclick="window.location='{% url "applications:application_list" %}?status=Selected'">
+                <div class="stat-number">{{ total_offers }}</div>
+                <div class="stat-label">Offers</div>
+            </div>
+            {% elif user.user_type == 'employee' %}
+            <div class="col-md-3 stat-item" onclick="window.location='{% url "employees:employee_vacancies" %}'">
+                <div class="stat-number">{{ total_vacancies }}</div>
+                <div class="stat-label">Vacancies</div>
+            </div>
+            <div class="col-md-3 stat-item" onclick="window.location='{% url "employees:employee_applications" %}'">
+                <div class="stat-number">{{ total_applications }}</div>
+                <div class="stat-label">Applications</div>
+            </div>
+            <div class="col-md-3 stat-item" onclick="window.location='{% url "applications:application_list" %}?status=Interview+Scheduled'">
+                <div class="stat-number">{{ total_interviews }}</div>
+                <div class="stat-label">Interviews</div>
+            </div>
+            <div class="col-md-3 stat-item" onclick="window.location='{% url "applications:application_list" %}?status=Selected'">
+                <div class="stat-number">{{ total_placements }}</div>
+                <div class="stat-label">Placements</div>
+            </div>
+            {% elif user.user_type == 'admin' %}
+            <div class="col-md-3 stat-item" onclick="window.location='{% url "workers:worker_list" %}'">
+                <div class="stat-number">{{ total_workers }}</div>
+                <div class="stat-label">Workers</div>
+            </div>
+            <div class="col-md-3 stat-item" onclick="window.location='{% url "vacancies:company_list" %}'">
+                <div class="stat-number">{{ total_companies }}</div>
+                <div class="stat-label">Companies</div>
+            </div>
+            <div class="col-md-3 stat-item" onclick="window.location='{% url "applications:application_list" %}'">
+                <div class="stat-number">{{ total_applications }}</div>
+                <div class="stat-label">Applications</div>
+            </div>
+            <div class="col-md-3 stat-item" onclick="window.location='{% url "vacancies:vacancy_list" %}'">
+                <div class="stat-number">{{ total_vacancies }}</div>
+                <div class="stat-label">Vacancies</div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- Quick Actions -->
+    <h2 class="mb-4">Quick Actions</h2>
+    <div class="row mb-4">
+        {% if user.user_type == 'worker' %}
+        <div class="col-md-4 mb-4">
+            <div class="card dashboard-card">
+                <div class="card-header">Browse Jobs</div>
+                <div class="card-body text-center">
+                    <div class="dashboard-icon">🔍</div>
+                    <p>Search and apply for available job vacancies</p>
+                    <a href="{% url 'vacancies:vacancy_list' %}" class="btn btn-primary">Browse Jobs</a>
+                    <div class="crud-actions">
+                        <a href="{% url 'applications:application_create' %}" class="btn btn-success crud-btn">Apply Now</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card dashboard-card">
+                <div class="card-header">My Applications</div>
+                <div class="card-body text-center">
+                    <div class="dashboard-icon">📝</div>
+                    <p>View and track your job applications</p>
+                    <a href="{% url 'applications:application_list' %}" class="btn btn-primary">View Applications</a>
+                    <div class="crud-actions">
+                        <a href="{% url 'applications:application_create' %}" class="btn btn-success crud-btn">New Application</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card dashboard-card">
+                <div class="card-header">Upload Documents</div>
+                <div class="card-body text-center">
+                    <div class="dashboard-icon">📄</div>
+                    <p>Upload and manage your documents</p>
+                    <a href="{% url 'documents:document_list' %}" class="btn btn-primary">Manage Documents</a>
+                    <div class="crud-actions">
+                        <a href="{% url 'documents:scanner' %}" class="btn btn-success crud-btn">Scan Document</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% elif user.user_type == 'employee' %}
+        <div class="col-md-4 mb-4">
+            <div class="card dashboard-card">
+                <div class="card-header">Post Vacancy</div>
+                <div class="card-body text-center">
+                    <div class="dashboard-icon">✏️</div>
+                    <p>Create a new job vacancy</p>
+                    <a href="{% url 'vacancies:vacancy_create' %}" class="btn btn-primary">Post Vacancy</a>
+                    <div class="crud-actions">
+                        <a href="{% url 'vacancies:company_create' %}" class="btn btn-success crud-btn">Add Company</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card dashboard-card">
+                <div class="card-header">Manage Applications</div>
+                <div class="card-body text-center">
+                    <div class="dashboard-icon">📋</div>
+                    <p>Review and process job applications</p>
+                    <a href="{% url 'employees:employee_applications' %}" class="btn btn-primary">View Applications</a>
+                    <div class="crud-actions">
+                        <a href="{% url 'applications:application_list' %}?status=Under+Review" class="btn btn-info crud-btn">Pending Review</a>
+                        <a href="{% url 'applications:application_list' %}?status=Interview+Scheduled" class="btn btn-warning crud-btn">Interviews</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card dashboard-card">
+                <div class="card-header">Manage Workers</div>
+                <div class="card-body text-center">
+                    <div class="dashboard-icon">👥</div>
+                    <p>Manage worker profiles</p>
+                    <a href="{% url 'employees:employee_workers' %}" class="btn btn-primary">Manage Workers</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card dashboard-card">
+                <div class="card-header">Manage Vacancies</div>
+                <div class="card-body text-center">
+                    <div class="dashboard-icon">🗓️</div>
+                    <p>Manage job vacancies</p>
+                    <a href="{% url 'employees:employee_vacancies' %}" class="btn btn-primary">Manage Vacancies</a>
+                    <div class="crud-actions">
+                        <a href="{% url 'vacancies:vacancy_create' %}" class="btn btn-success crud-btn">Add Vacancy</a>
+                        <a href="{% url 'vacancies:company_list' %}" class="btn btn-info crud-btn">Companies</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% elif user.user_type == 'admin' %}
+        <div class="col-md-4 mb-4">
+            <div class="card dashboard-card">
+                <div class="card-header">Manage Workers</div>
+                <div class="card-body text-center">
+                    <div class="dashboard-icon">👥</div>
+                    <p>Manage worker profiles and permissions</p>
+                    <a href="{% url 'workers:worker_list' %}" class="btn btn-primary">Manage Workers</a>
+                    <div class="crud-actions">
+                        <a href="{% url 'workers:worker_create' %}" class="btn btn-success crud-btn">Add Worker</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card dashboard-card">
+                <div class="card-header">Manage Employees</div>
+                <div class="card-body text-center">
+                    <div class="dashboard-icon">✅</div>
+                    <p>Manage employee accounts and permissions</p>
+                    <a href="{% url 'employees:employee_list' %}" class="btn btn-primary">Manage Employees</a>
+                    <div class="crud-actions">
+                        <a href="{% url 'employees:employee_create' %}" class="btn btn-success crud-btn">Add Employee</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card dashboard-card">
+                <div class="card-header">Manage Vacancies</div>
+                <div class="card-body text-center">
+                    <div class="dashboard-icon">📊</div>
+                    <p>Manage job vacancies and applications</p>
+                    <a href="{% url 'vacancies:vacancy_list' %}" class="btn btn-primary">Manage Vacancies</a>
+                    <div class="crud-actions">
+                        <a href="{% url 'vacancies:vacancy_create' %}" class="btn btn-success crud-btn">Add Vacancy</a>
+                        <a href="{% url 'vacancies:company_list' %}" class="btn btn-info crud-btn">Companies</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    
+    <!-- Database Management Section for Admin -->
+    {% if user.user_type == 'admin' %}
+    <h2 class="mb-4">Database Management</h2>
+    <div class="row mb-4">
+        <div class="col-md-4 mb-4">
+            <div class="card dashboard-card">
+                <div class="card-header">Applications</div>
+                <div class="card-body text-center">
+                    <div class="dashboard-icon">📑</div>
+                    <p>Manage all applications in the system</p>
+                    <a href="{% url 'applications:application_list' %}" class="btn btn-primary">View All</a>
+                    <div class="crud-actions">
+                        <a href="{% url 'applications:application_list' %}?status=Submitted" class="btn btn-info crud-btn">New</a>
+                        <a href="{% url 'applications:application_list' %}?status=Under+Review" class="btn btn-warning crud-btn">In Review</a>
+                        <a href="{% url 'applications:application_list' %}?status=Selected" class="btn btn-success crud-btn">Selected</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card dashboard-card">
+                <div class="card-header">Companies</div>
+                <div class="card-body text-center">
+                    <div class="dashboard-icon">🏢</div>
+                    <p>Manage company information</p>
+                    <a href="{% url 'vacancies:company_list' %}" class="btn btn-primary">View All</a>
+                    <div class="crud-actions">
+                        <a href="{% url 'vacancies:company_create' %}" class="btn btn-success crud-btn">Add Company</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card dashboard-card">
+                <div class="card-header">Documents</div>
+                <div class="card-body text-center">
+                    <div class="dashboard-icon">📁</div>
+                    <p>Manage system documents</p>
+                    <a href="{% url 'documents:document_list' %}" class="btn btn-primary">View All</a>
+                    <div class="crud-actions">
+                        <a href="{% url 'documents:scanner' %}" class="btn btn-success crud-btn">Scan Document</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    
+    <!-- Recent Activity -->
+    <h2 class="mb-4">Recent Activity</h2>
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="list-group">
+                <div class="list-group-item list-group-item-action">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">Welcome to FEMS</h5>
+                        <small class="text-muted">Just now</small>
+                    </div>
+                    <p class="mb-1">You have successfully logged into the Foreign Employment Management System.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Add dashboard interactivity
+    document.addEventListener('DOMContentLoaded', function() {
+        // Make stat items clickable
+        const statItems = document.querySelectorAll('.stat-item');
+        statItems.forEach(item => {
+            item.addEventListener('click', function() {
+                const url = this.getAttribute('onclick').split("'")[1];
+                if (url) {
+                    window.location.href = url;
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

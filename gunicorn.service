@@ -1,0 +1,26 @@
+[Unit]
+Description=gunicorn daemon for FEMS Django Application
+After=network.target
+
+[Service]
+User=www-data
+Group=www-data
+WorkingDirectory=/path/to/fems_project
+ExecStart=/path/to/venv/bin/gunicorn -c gunicorn_config.py fems.wsgi:application
+
+# Restart on failure but with exponential backoff to prevent startup loops
+Restart=on-failure
+RestartSec=5
+StartLimitIntervalSec=500
+StartLimitBurst=5
+
+# Security settings
+PrivateTmp=true
+ProtectSystem=full
+NoNewPrivileges=true
+
+# Environment variables
+Environment=DJANGO_SETTINGS_MODULE=fems.settings_prod
+
+[Install]
+WantedBy=multi-user.target

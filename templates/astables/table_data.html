@@ -1,0 +1,19 @@
+<!-- <td style="white-space: nowrap; text-overflow:ellipsis; overflow: hidden; max-width:1px;"> -->
+<table border="1" cellspacing="0" cellpadding="0">
+    <thead>
+        <tr>
+            {% for column in columns %}
+                <th>{{ column }}</th>
+            {% endfor %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for row in rows %}
+            <tr>
+                {% for value in row %}
+                    <td style="white-space: nowrap; text-overflow1:ellipsis; overflow: auto; max-width:16vw;">{{ value }}</td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

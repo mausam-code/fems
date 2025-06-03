@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}Upload Document{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Upload New Document</h1>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <button type="submit" class="btn btn-success">Upload Document</button>
+        <a href="#" class="btn btn-secondary">Cancel</a> {# Placeholder URL for document list #}
+    </form>
+</div>
+{% endblock %}

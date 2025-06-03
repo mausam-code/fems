@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}{% if form.instance.pk %}Edit Employee{% else %}Create Employee{% endif %}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>{% if form.instance.pk %}Edit Employee{% else %}Create New Employee{% endif %}</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <button type="submit" class="btn btn-success">{% if form.instance.pk %}Save Changes{% else %}Create Employee{% endif %}</button>
+        <a href="#" class="btn btn-secondary">Cancel</a> {# Placeholder URL for employee list #}
+    </form>
+</div>
+{% endblock %}

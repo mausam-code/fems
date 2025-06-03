@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block title %}My Applications{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>My Applications</h1>
+        <a href="{% url 'applications:application_create' %}" class="btn btn-success">Apply for a Job</a>
+    </div>
+
+    {% if applications %}
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Applications</h5>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Vacancy</th>
+                            <th>Company</th>
+                            <th>Status</th>
+                            <th>Applied On</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for application in applications %}
+                        <tr>
+                            <td>{{ application.id }}</td>
+                            <td>{{ application.vacancy.title }}</td>
+                            <td>{{ application.vacancy.company.name }}</td>
+                            <td>
+                                {% if application.status == 'Pending' %}
+                                <span class="badge bg-secondary">Pending</span>
+                                {% elif application.status == 'Under Review' %}
+                                <span class="badge bg-info">Under Review</span>
+                                {% elif application.status == 'Interview Scheduled' %}
+                                <span class="badge bg-warning">Interview</span>
+                                {% elif application.status == 'Selected' %}
+                                <span class="badge bg-success">Selected</span>
+                                {% elif application.status == 'Rejected' %}
+                                <span class="badge bg-danger">Rejected</span>
+                                {% else %}
+                                <span class="badge bg-dark">{{ application.status }}</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ application.created_at|date:"M d, Y" }}</td>
+                            <td>
+                                <a href="{% url 'applications:application_detail' application.id %}" class="btn btn-sm btn-primary">View</a>
+                                {% if application.status == 'Pending' %}
+                                <a href="{% url 'applications:application_update' application.id %}" class="btn btn-sm btn-warning">Edit</a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+        <p>You haven't applied for any jobs yet.</p>
+        <a href="{% url 'vacancies:vacancy_list' %}" class="btn btn-primary mt-2">Browse Available Jobs</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

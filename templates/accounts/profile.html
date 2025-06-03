@@ -1,0 +1,185 @@
+{% extends 'base.html' %}
+
+{% block title %}My Profile - FEMS{% endblock %}
+
+{% block extra_css %}
+<style>
+    .profile-container {
+        max-width: 800px;
+        margin: 50px auto;
+    }
+    
+    .profile-header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    
+    .profile-header h1 {
+        color: var(--secondary-color);
+        font-weight: 600;
+    }
+    
+    .profile-avatar {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        background-color: var(--primary-color);
+        color: white;
+        font-size: 3rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+    }
+    
+    .profile-form .form-control {
+        padding: 12px;
+        border-radius: 6px;
+        margin-bottom: 15px;
+    }
+    
+    .profile-form .btn-update {
+        padding: 12px;
+        font-weight: 600;
+        width: 100%;
+        margin-top: 10px;
+    }
+    
+    .profile-card {
+        margin-bottom: 30px;
+    }
+    
+    .profile-info {
+        padding: 20px;
+    }
+    
+    .profile-info-item {
+        margin-bottom: 15px;
+    }
+    
+    .profile-info-label {
+        font-weight: 600;
+        color: #555;
+    }
+    
+    .profile-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 20px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="profile-container">
+    <div class="profile-header">
+        <div class="profile-avatar">
+            {{ user.first_name|first }}{{ user.last_name|first }}
+        </div>
+        <h1>{{ user.first_name }} {{ user.last_name }}</h1>
+        <p class="text-muted">{{ user.user_type|title }} Account</p>
+        <p class="badge {% if user.verification_status == 'Verified' %}bg-success{% elif user.verification_status == 'Rejected' %}bg-danger{% else %}bg-warning{% endif %}">
+            {{ user.verification_status }}
+        </p>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card profile-card">
+                <div class="card-header">Account Information</div>
+                <div class="card-body profile-info">
+                    <div class="profile-info-item">
+                        <div class="profile-info-label">Email</div>
+                        <div>{{ user.email }}</div>
+                    </div>
+                    <div class="profile-info-item">
+                        <div class="profile-info-label">Phone Number</div>
+                        <div>{{ user.phone_number|default:"Not provided" }}</div>
+                    </div>
+                    <div class="profile-info-item">
+                        <div class="profile-info-label">Account Type</div>
+                        <div>{{ user.user_type|title }}</div>
+                    </div>
+                    <div class="profile-info-item">
+                        <div class="profile-info-label">Joined</div>
+                        <div>{{ user.date_joined|date:"F j, Y" }}</div>
+                    </div>
+                    <div class="profile-actions">
+                        <a href="{% url 'accounts:change-password' %}" class="btn btn-outline-primary">Change Password</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card profile-card">
+                <div class="card-header">Edit Profile</div>
+                <div class="card-body">
+                    <form class="profile-form" method="post">
+                        {% csrf_token %}
+                        
+                        {% if form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            {% for error in form.non_field_errors %}
+                            {{ error }}
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.first_name.id_for_label }}" class="form-label">First Name</label>
+                            {{ form.first_name }}
+                            {% if form.first_name.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.first_name.errors %}
+                                {{ error }}
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.last_name.id_for_label }}" class="form-label">Last Name</label>
+                            {{ form.last_name }}
+                            {% if form.last_name.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.last_name.errors %}
+                                {{ error }}
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.email.id_for_label }}" class="form-label">Email Address</label>
+                            {{ form.email }}
+                            <div class="form-text">Email cannot be changed.</div>
+                            {% if form.email.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.email.errors %}
+                                {{ error }}
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.phone_number.id_for_label }}" class="form-label">Phone Number</label>
+                            {{ form.phone_number }}
+                            {% if form.phone_number.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.phone_number.errors %}
+                                {{ error }}
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary btn-update">Update Profile</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
